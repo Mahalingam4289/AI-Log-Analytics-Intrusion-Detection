@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sentinel — Sign In</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="login-shell">
+  <form class="login-card" id="loginForm">
+    <div class="brand" style="margin-bottom:20px">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-title">SENTINEL</div>
+        <div class="brand-sub">AI Security Operations</div>
+      </div>
+    </div>
+
+    <label class="login-label">Username</label>
+    <input class="login-input" id="username" value="admin" autocomplete="username" />
+
+    <label class="login-label">Password</label>
+    <input class="login-input" id="password" type="password" autocomplete="current-password" />
+
+    <div id="loginError" class="login-error" style="display:none"></div>
+
+    <button class="btn primary" type="submit" style="width:100%;margin-top:14px" id="loginBtn">
+      Sign In
+    </button>
+
+    <div class="login-hint">Default demo credentials: admin / admin123</div>
+  </form>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  // Already logged in? skip straight to the dashboard.
+  if (Auth.isAuthenticated()) window.location.href = "index.html";
+
+  const form = document.getElementById("loginForm");
+  const errorBox = document.getElementById("loginError");
+  const btn = document.getElementById("loginBtn");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorBox.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Signing in…";
+    try {
+      await Auth.login(
+        document.getElementById("username").value,
+        document.getElementById("password").value
+      );
+      window.location.href = "index.html";
+    } catch (err) {
+      errorBox.textContent = err.message || "Login failed";
+      errorBox.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Sign In";
+    }
+  });
+</script>
+</body>
+</html>

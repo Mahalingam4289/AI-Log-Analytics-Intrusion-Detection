@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sentinel — AI Security Operations</title>
+<link rel="stylesheet" href="css/styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-title">SENTINEL</div>
+        <div class="brand-sub">AI-Driven Multi-Surface Log Analytics &amp; Behavioral Intrusion Detection</div>
+      </div>
+    </div>
+    <div class="stream-controls">
+      <div class="speed-slider">
+        <span>RATE</span>
+        <input type="range" min="1" max="20" step="1" value="4" id="rateSlider" />
+        <span id="rateValue">4/s</span>
+      </div>
+      <button class="btn primary" id="streamToggle">■ Stop Feed</button>
+      <div class="conn-status">
+        <span class="dot off" id="connDot"></span>
+        <span id="connLabel">DISCONNECTED</span>
+      </div>
+      <div class="session-pill">
+        <span id="sessionUser"></span>
+        <button class="icon-btn" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Total Events</div><div class="kpi-value" id="kpiEvents">—</div><div class="kpi-bar"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Anomalies Flagged</div><div class="kpi-value" id="kpiAnomalies">—</div><div class="kpi-bar"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Predicted Attacks</div><div class="kpi-value" id="kpiAttacks">—</div><div class="kpi-bar"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Critical Events</div><div class="kpi-value accent-critical" id="kpiCritical">—</div><div class="kpi-bar"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Open Incidents</div><div class="kpi-value accent-good" id="kpiIncidents">—</div><div class="kpi-bar"></div></div>
+  </div>
+
+  <div class="main-grid">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Live Event Feed<span class="count" id="feedCount"></span></div>
+          <button class="icon-btn" id="clearFocusBtn" style="display:none">Clear filter</button>
+        </div>
+        <div class="filter-bar">
+          <input class="filter-input search" id="feedSearch" placeholder="Search user, IP, category, attack type..." />
+          <button class="icon-btn" id="exportEventsBtn">Export CSV</button>
+        </div>
+        <div class="panel-body feed-scroll">
+          <table class="feed-table">
+            <thead>
+              <tr><th>Time</th><th>Source</th><th>Entity</th><th>Event</th><th>Risk</th><th>Severity</th><th>Category</th></tr>
+            </thead>
+            <tbody id="feedBody">
+              <tr><td colspan="7"><div class="empty-state">Waiting for events…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Risk Score Trend (1-min avg)</div></div>
+        <div class="chart-panel"><canvas id="riskChart" height="90"></canvas></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Security Alerts<span class="count" id="alertCount"></span></div></div>
+        <div class="filter-bar">
+          <input class="filter-input search" id="alertSearch" placeholder="Search alerts..." />
+          <button class="icon-btn" id="exportAlertsBtn">Export CSV</button>
+        </div>
+        <div class="panel-body feed-scroll" style="max-height:420px" id="alertsList">
+          <div class="empty-state">No alerts yet.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Severity Distribution</div></div>
+        <div class="chart-panel"><canvas id="severityChart" height="140"></canvas></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Attack Type Distribution</div></div>
+        <div class="chart-panel"><canvas id="attackChart" height="160"></canvas></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Detection Settings</div></div>
+        <div class="panel-body pad">
+          <div class="settings-row">
+            <span class="settings-label">Alert threshold (risk score)</span>
+            <input class="settings-input" type="number" id="settingAlertThreshold" />
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Correlation signal threshold</span>
+            <input class="settings-input" type="number" id="settingCorrelationThreshold" />
+          </div>
+          <button class="btn primary" style="margin-top:12px;width:100%" id="saveSettingsBtn">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Research prototype — all response actions (IP blocking, account disabling, session termination) are SIMULATED
+    ONLY. No real infrastructure is affected. Threat categories reflect classification/suspicion, not proof of intent.
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay" style="display:none">
+  <div class="drawer" id="drawerContent"></div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ws.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
